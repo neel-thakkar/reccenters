@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Lab One</title>
+		<style>
+			.pPanel{
+				margin-right:300px;
+				background-color:#000000;
+			}
+			.pPanel a{
+				float:center;
+				color: #ffffff;
+				text-align: center;
+				padding: 0px 8px 0px 8px;
+				font-size: 35px;
+	
+			}
+			.pPanel a:hover{
+				background-color: #ffffff;
+				color: #000000;
+			}
+			.pPanel a.active{
+				background-color: #404040; 	
+				color: #ffffff;
+			}
+			
+			.pPanel a:link {
+				text-decoration: none;
+			}
+		</style> 
+	</head>
+	<body>
+		<div class='pPanel'>
+			<a href="index.html">All</a>
+			<a href="carlisle.html">Carlisle</a>
+			<a href="hamilton.html">Hamilton</a>
+			<a href="binbrook.html">Binbrook</a>
+			<a href="dundas.html">Dundas</a>
+			<a href="ancaster.html">Ancaster</a>
+			<a class="active" href="flamborough.html">Flamborough</a>
+			<a href="stoney.html">Stoney Creek</a>
+		</div>
+		<p><br></p>
+		<div id='myMap' style='width: 500px; height: 500px;'></div>
+		<button id="jsonButton">SHOW JSON DATA</button>
+		<p>GPS puts you at: </p>
+		<p id='printLoc'></p>
+		<pre id="jsD"></pre>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script type='text/javascript'>
+		
+			var listRecs = [{"name":"Carlisle Community Centre & Arena","address":"1496 Centre Road","city":"Carlisle","phone":"905-689-7283","latitude":"43.39606","longtitude":"-79.98293"},{"name":"Chedoke Twin Pad Arena","address":"91 Chedmac Dr.","city":"Hamilton","phone":"905-546-2429","latitude":"43.23889","longtitude":"-79.92077"},{"name":"Coronation Arena and Pool","address":"81 Macklin St. North","city":"Hamilton","phone":"905-546-3109","latitude":"43.2646","longtitude":"-79.89598"},{"name":"Eastwood Arena","address":"111 Burlington St. East","city":"Hamilton","phone":"905-546-3152","latitude":"43.27171","longtitude":"-79.8556399"},{"name":"Glanbrook Arena & Auditorium","address":"4300 Binbrook Road","city":"Binbrook","phone":"905-692-9331","latitude":"43.12911","longtitude":"-79.83908"},{"name":"Inch Park Arena & Pool","address":"400 Queensdale Ave.","city":"Hamilton","phone":"905-546-4922","latitude":"43.23712","longtitude":"-79.85937"},{"name":"Lawfield Arena","address":"150 Folkstone Ave.","city":"Hamilton","phone":"905-546-4923","latitude":"43.21464","longtitude":"-79.8511599"},{"name":"Market Street (J.L. Grightmire) Arena","address":"35 Market St. South","city":"Dundas","phone":"905-540-6678","latitude":"43.26596","longtitude":"-79.96339"},{"name":"Mohawk 4 Ice Centre","address":"710 Mountain Brow Blvd.","city":"Hamilton","phone":"905-318-5111","latitude":"43.21037","longtitude":"-79.81616"},{"name":"Morgan Firestone Arena","address":"385 Jerseyville Road West","city":"Ancaster","phone":"905-546-3769","latitude":"43.21674","longtitude":"-80.00733"},{"name":"Mountain (Dave Andreychuk) Arena","address":"25 Hester St.","city":"Hamilton","phone":"905-546-4938","latitude":"43.22558","longtitude":"-79.88101"},{"name":"North Wentworth Twin-Pad Arena","address":"27 Hwy 5","city":"Flamborough","phone":"905-689-6666","latitude":"43.3102291","longtitude":"-79.9202291"},{"name":"Olympic Arena","address":"70 Olympic Dr.","city":"Dundas","phone":"905-540-6686","latitude":"43.27292","longtitude":"-79.93426"},{"name":"Parkdale (Pat Quinn) Arena and Pool","address":"1770 Main St. East","city":"Hamilton","phone":"905-546-4785","latitude":"43.2366018","longtitude":"-79.7939014"},{"name":"Rosedale Arena and Pool","address":"100 Greenhill Ave.","city":"Hamilton","phone":"905-546-4805","latitude":"43.21986","longtitude":"-79.80896"},{"name":"Saltfleet Arena","address":"24 Sherwood Park Road","city":"Stoney Creek","phone":"905-643-3883","latitude":"43.21851","longtitude":"-79.70443"},{"name":"Scott Park Arena","address":"876 Cannon St. East","city":"Hamilton","phone":"905-546-4919","latitude":"43.25033","longtitude":"-79.83038"},{"name":"Spring Valley Arena","address":"29 Orchard Dr.","city":"Ancaster","phone":"905-648-4404","latitude":"43.217","longtitude":"-79.9977399"},{"name":"Stoney Creek Arena","address":"37 King St. West","city":"Stoney Creek","phone":"905-662-2426","latitude":"43.26648","longtitude":"-79.95509"},{"name":"Valley Park Arena & Rec Centre","address":"970 Paramount Dr.","city":"Stoney Creek","phone":"905-573-3600","latitude":"43.19332","longtitude":"-79.79796"}];
+		
+			$("#jsonButton").click(function(){
+				document.getElementById("jsD").innerHTML = JSON.stringify(listRecs, null, '\t');
+			});
+			var infoBox;
+			function loadMapScene(){
+				var map = new Microsoft.Maps.Map(document.getElementById('myMap'),{});
+				
+			
+					infoBox = new Microsoft.Maps.Infobox(map.getCenter(),{visible:false});
+				
+					infoBox.setMap(map);
+					
+			
+					
+				for(var i=0; i < listRecs.length; i++){
+				
+					if(listRecs[i].city == "Flamborough"){
+						var pushPin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(listRecs[i].latitude, listRecs[i].longtitude));
+			
+						pushPin.Title = listRecs[i].name;
+						pushPin.Description = listRecs[i].address + "<br>" + listRecs[i].city + "<br>" + listRecs[i].phone + "<br>" + '<a href="https://www.bing.com/maps?where1= '+listRecs[i].name+'" target="_blank">Bing Maps</a>' + ' <a href="http://dev.virtualearth.net/REST/v1/locations?o=xml&q=listRecs[i].address&key=ApTlz3zPznydG714QvW8vKPY96K-xMAnUwmoTfZXBXFlvR2CMNKfXjHfw-ykCp19" target="_blank">Lat/Long</a>' +'<img src="recCentre.png" style="float: right"}>';
+					
+						Microsoft.Maps.Events.addHandler(pushPin, 'click', displayInfoBox);
+					
+						map.entities.push(pushPin);
+					}
+			
+					
+					
+					
+				}
+				var deniedError = document.getElementById("printLoc");
+				if(navigator.geolocation){
+					navigator.geolocation.getCurrentPosition(printPos,printError);
+				}else{
+					deniedError.innerHTML = "Geolocation cannot be accessed with this browser";
+				}
+				
+				function printPos(position)
+				{
+					var userLoc = new Microsoft.Maps.Location(
+						position.coords.latitude,
+						position.coords.longitude);		
+					var userPin = new Microsoft.Maps.Pushpin(userLoc);
+					userPin.Title = "Current Location";
+					userPin.Description = "";
+					Microsoft.Maps.Events.addHandler(userPin, 'click', displayInfoBox);
+					map.entities.push(userPin);
+					map.setView({center: userLoc, zoom: 14});
+					deniedError.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude;
+				}
+						
+				function printError(error) 
+				{
+					switch(error.code) {
+						case error.PERMISSION_DENIED:
+							deniedError.innerHTML = "The Location acquisition process failed because the document does not have permission to use the Geolocation API."
+							break;
+						case error.POSITION_UNAVAILABLE:
+							deniedError.innerHTML = "GPS Co-ordinates Unavailable!! Default Values used."
+							break;
+						case error.TIMEOUT:
+							deniedError.innerHTML = "The request to get user location timed out."
+							break;
+						case error.UNKNOWN_ERROR:
+							deniedError.innerHTML = "An unknown error occurred."
+							break;
+					}
+				}
+				
+			}
+			function displayInfoBox(e){
+				 infoBox.setOptions({location: e.target.getLocation(),visible: true, title: e.target.Title, description: e.target.Description});
+				 
+			}
+			
+			
+			
+			
+			
+			
+		</script>
+		<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=ApTlz3zPznydG714QvW8vKPY96K-xMAnUwmoTfZXBXFlvR2CMNKfXjHfw-ykCp19&callback=loadMapScene' async defer></script>
+	</body>
+</html>
